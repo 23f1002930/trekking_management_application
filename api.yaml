@@ -1,0 +1,570 @@
+openapi: 3.0.3
+info:
+  title: Trekking Management Application API
+  version: 1.0.0
+  description: |
+    This YAML documents the actual endpoints implemented by the Trekking Management Application.
+    The application is a Flask web app with HTML form-based routes for authentication,
+    trek management, user booking management, and staff workflows.
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+paths:
+  /login:
+    get:
+      tags:
+        - Authentication
+      summary: Show login page
+      responses:
+        '200':
+          description: Login page HTML form
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user, staff, or admin
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to dashboard on success
+        '200':
+          description: Login page with error message
+  /logout:
+    get:
+      tags:
+        - Authentication
+      summary: Logout current user
+      responses:
+        '302':
+          description: Redirect to login page after logout
+  /register:
+    get:
+      tags:
+        - Authentication
+      summary: Show user registration page
+      responses:
+        '200':
+          description: Registration page HTML form
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to login page on success
+        '200':
+          description: Registration page with validation errors
+  /register-staff:
+    get:
+      tags:
+        - Authentication
+      summary: Show staff registration page
+      responses:
+        '200':
+          description: Staff registration page HTML form
+    post:
+      tags:
+        - Authentication
+      summary: Register a new staff account (pending approval)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to login page on success
+        '200':
+          description: Registration page with validation errors
+  /admin/dashboard:
+    get:
+      tags:
+        - Admin
+      summary: Show admin dashboard
+      responses:
+        '200':
+          description: Admin dashboard page
+  /admin/treks:
+    get:
+      tags:
+        - Treks
+        - Admin
+      summary: List treks and show trek creation form
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin trek management page
+    post:
+      tags:
+        - Treks
+        - Admin
+      summary: Create a new trek
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                trek_name:
+                  type: string
+                location:
+                  type: string
+                difficulty:
+                  type: string
+                duration:
+                  type: string
+                available_slots:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+      responses:
+        '302':
+          description: Redirect back to trek list on success
+        '200':
+          description: Admin trek list page with validation errors
+  /admin/treks/{trek_id}/approve:
+    post:
+      tags:
+        - Treks
+        - Admin
+      summary: Approve a trek and set status to Open
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to admin trek list
+  /admin/treks/{trek_id}/edit:
+    get:
+      tags:
+        - Treks
+        - Admin
+      summary: Show trek edit page
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trek edit page
+    post:
+      tags:
+        - Treks
+        - Admin
+      summary: Update trek details
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                trek_name:
+                  type: string
+                location:
+                  type: string
+                difficulty:
+                  type: string
+                duration:
+                  type: string
+                available_slots:
+                  type: integer
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                description:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to admin trek list on success
+        '200':
+          description: Trek edit page with validation errors
+  /admin/treks/{trek_id}/delete:
+    post:
+      tags:
+        - Treks
+        - Admin
+      summary: Delete a trek and its bookings
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to admin trek list
+  /admin/treks/{trek_id}/assign_staff:
+    post:
+      tags:
+        - Treks
+        - Admin
+      summary: Assign an approved staff member to a trek
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                staff_id:
+                  type: integer
+      responses:
+        '302':
+          description: Redirect to admin trek list
+  /admin/staff:
+    get:
+      tags:
+        - Staff
+        - Admin
+      summary: List staff members and approval status
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin staff management page
+  /admin/staff/{staff_id}/approve:
+    post:
+      tags:
+        - Staff
+        - Admin
+      summary: Approve a pending staff account
+      parameters:
+        - in: path
+          name: staff_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to admin staff list
+  /admin/staff/{staff_id}/reject:
+    post:
+      tags:
+        - Staff
+        - Admin
+      summary: Reject a pending staff account
+      parameters:
+        - in: path
+          name: staff_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to admin staff list
+  /admin/users:
+    get:
+      tags:
+        - Users
+        - Admin
+      summary: List registered users
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Admin user management page
+  /admin/users/{user_id}/blacklist:
+    post:
+      tags:
+        - Users
+        - Admin
+      summary: Blacklist a user account
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to admin user list
+  /admin/bookings:
+    get:
+      tags:
+        - Bookings
+        - Admin
+      summary: List all bookings
+      responses:
+        '200':
+          description: Admin booking listing page
+  /user/dashboard:
+    get:
+      tags:
+        - Users
+      summary: Show user dashboard with available treks and recent bookings
+      responses:
+        '200':
+          description: User dashboard page
+  /user/treks:
+    get:
+      tags:
+        - Treks
+        - Users
+      summary: List open treks for booking
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+        - in: query
+          name: location
+          schema:
+            type: string
+        - in: query
+          name: difficulty
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User trek listing page
+  /user/treks/{trek_id}:
+    get:
+      tags:
+        - Treks
+        - Users
+      summary: Show trek details
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Single trek detail page
+  /user/treks/{trek_id}/book:
+    post:
+      tags:
+        - Bookings
+        - Users
+      summary: Book a trek for the logged-in user
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to user bookings page on success
+  /user/bookings:
+    get:
+      tags:
+        - Bookings
+        - Users
+      summary: List bookings for the logged-in user
+      responses:
+        '200':
+          description: User bookings page
+  /user/bookings/{booking_id}/cancel:
+    post:
+      tags:
+        - Bookings
+        - Users
+      summary: Cancel a booking
+      parameters:
+        - in: path
+          name: booking_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to user bookings page on success
+  /user/history:
+    get:
+      tags:
+        - Bookings
+        - Users
+      summary: View booking history
+      responses:
+        '200':
+          description: User booking history page
+  /user/profile:
+    get:
+      tags:
+        - Users
+      summary: Show profile edit page
+      responses:
+        '200':
+          description: User profile page
+    post:
+      tags:
+        - Users
+      summary: Update user profile details
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to profile page on success
+  /staff/dashboard:
+    get:
+      tags:
+        - Staff
+      summary: Show staff dashboard with assigned treks and participant count
+      responses:
+        '200':
+          description: Staff dashboard page
+  /staff/treks:
+    get:
+      tags:
+        - Staff
+      summary: List treks assigned to the logged-in staff member
+      responses:
+        '200':
+          description: Staff trek listing page
+  /staff/treks/{trek_id}/participants:
+    get:
+      tags:
+        - Staff
+      summary: Show participants for a staff-assigned trek
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trek participants page
+  /staff/treks/{trek_id}/update:
+    get:
+      tags:
+        - Staff
+      summary: Show staff trek update form
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Staff trek update page
+    post:
+      tags:
+        - Staff
+      summary: Update available slots and status for a staff-assigned trek
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                available_slots:
+                  type: integer
+                status:
+                  type: string
+      responses:
+        '302':
+          description: Redirect to staff trek list on success
+  /staff/treks/{trek_id}/complete:
+    post:
+      tags:
+        - Staff
+      summary: Mark a trek as completed
+      parameters:
+        - in: path
+          name: trek_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '302':
+          description: Redirect to staff trek list
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: session
+security:
+  - cookieAuth: []

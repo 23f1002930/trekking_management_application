@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Users</h2>
+<div class="management-card p-4 rounded-4 shadow-sm mb-4">
+    <div class="search-card p-3 mb-4 rounded-4">
+        <form class="row g-2" method="get">
+            <div class="col-md-8"><input class="form-control" name="search" value="{{ search }}" placeholder="Search users"></div>
+            <div class="col-md-4"><button class="btn btn-primary w-100" type="submit">Search</button></div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white rounded-4">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                {% if user.account_status == 'Active' %}
+                    <span class="status-badge status-active">Active</span>
+                {% elif user.account_status == 'Blacklisted' %}
+                    <span class="status-badge status-blacklisted">Blacklisted</span>
+                {% else %}
+                    <span class="status-badge status-awaiting">{{ user.account_status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if user.account_status == 'Blacklisted' %}
+                    <form method="post" action="{{ url_for('admin.whitelist_user', user_id=user.user_id) }}">
+                        <button class="btn btn-success btn-sm" type="submit">Whitelist</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{{ url_for('admin.blacklist_user', user_id=user.user_id) }}">
+                        <button class="btn btn-reject btn-sm" type="submit">Blacklist</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

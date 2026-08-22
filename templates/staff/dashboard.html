@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Staff Dashboard</h2>
+<div class="row g-3 mb-4">
+    <div class="col-md-6"><div class="card p-3"><h5>Assigned Treks</h5><h3>{{ assigned_treks|length }}</h3></div></div>
+    <div class="col-md-6"><div class="card p-3"><h5>Total Participants</h5><h3>{{ participant_count }}</h3></div></div>
+</div>
+<ul class="list-group">
+    {% for trek in assigned_treks %}
+        <li class="list-group-item">{{ trek.trek_name }} - {{ trek.location }} - {{ trek.status }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Staff Management</h2>
+<div class="management-card p-4 rounded-4 shadow-sm mb-4">
+    <div class="search-card p-3 mb-4 rounded-4">
+        <form class="row g-2" method="get">
+            <div class="col-md-8"><input class="form-control" name="search" value="{{ search }}" placeholder="Search staff"></div>
+            <div class="col-md-4"><button class="btn btn-primary w-100" type="submit">Search</button></div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered bg-white rounded-4">
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+        {% for staff in staff_members %}
+        <tr>
+            <td>{{ staff.staff_id }}</td>
+            <td>{{ staff.name }}</td>
+            <td>{{ staff.email }}</td>
+            <td>
+                {% if staff.approval_status == 'Approved' %}
+                    <span class="status-badge status-approved">Approved</span>
+                {% elif staff.approval_status == 'Pending' %}
+                    <span class="status-badge status-pending">Pending</span>
+                {% elif staff.approval_status == 'Rejected' %}
+                    <span class="status-badge status-rejected">Rejected</span>
+                {% else %}
+                    <span class="status-badge status-awaiting">{{ staff.approval_status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('admin.approve_staff', staff_id=staff.staff_id) }}" class="d-inline me-2 mb-2 mb-sm-0">
+                    <button class="btn btn-approve btn-sm" type="submit">Approve</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.reject_staff', staff_id=staff.staff_id) }}" class="d-inline">
+                    <button class="btn btn-reject btn-sm" type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

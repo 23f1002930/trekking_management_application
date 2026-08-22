@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Update Trek</h2>
+<form method="post" class="card p-3">
+    <div class="mb-3">
+        <label class="form-label">Available Slots</label>
+        <input type="number" class="form-control" name="available_slots" value="{{ trek.available_slots }}" min="0">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select class="form-select" name="status">
+            <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
+            <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
+            <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed</option>
+        </select>
+    </div>
+    <button class="btn btn-primary" type="submit">Save</button>
+</form>
+{% endblock %}

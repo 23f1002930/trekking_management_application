@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card p-3"><h5>Total Treks</h5><h3>{{ total_treks }}</h3></div></div>
+    <div class="col-md-3"><div class="card p-3"><h5>Total Users</h5><h3>{{ total_users }}</h3></div></div>
+    <div class="col-md-3"><div class="card p-3"><h5>Total Staff</h5><h3>{{ total_staff }}</h3></div></div>
+    <div class="col-md-3"><div class="card p-3"><h5>Total Bookings</h5><h3>{{ total_bookings }}</h3></div></div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Recent Bookings</h4>
+        <ul class="list-group">
+            {% for booking in recent_bookings %}
+                <li class="list-group-item">Booking #{{ booking.booking_id }} - {{ booking.trek.trek_name }} - {{ booking.status }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h4>Pending Staff</h4>
+        <ul class="list-group">
+            {% for staff in pending_staff %}
+                <li class="list-group-item">{{ staff.name }} ({{ staff.email }})</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

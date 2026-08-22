@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Participants for {{ trek.trek_name }}</h2>
+<table class="table table-bordered bg-white">
+    <thead><tr><th>Name</th><th>Email</th><th>Status</th></tr></thead>
+    <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.user.name }}</td>
+            <td>{{ booking.user.email }}</td>
+            <td>{{ booking.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

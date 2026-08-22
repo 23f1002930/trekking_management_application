@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">My Bookings</h2>
+<ul class="list-group">
+    {% for booking in bookings %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ booking.trek.trek_name }} - {{ booking.status }}</span>
+        {% if booking.status == 'Booked' %}
+        <form method="post" action="{{ url_for('user.cancel_booking', booking_id=booking.booking_id) }}">
+            <button class="btn btn-outline-danger btn-sm" type="submit">Cancel</button>
+        </form>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

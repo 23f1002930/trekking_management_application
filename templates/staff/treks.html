@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Assigned Treks</h2>
+<div class="search-card p-3 mb-4 rounded-4">
+    <form class="row g-2" method="get">
+        <div class="col-md-8"><input class="form-control" name="search" value="{{ search }}" placeholder="Search assigned treks"></div>
+        <div class="col-md-4"><button class="btn btn-outline-primary w-100" type="submit">Search</button></div>
+    </form>
+</div>
+<ul class="list-group shadow-sm rounded-4 overflow-hidden">
+    {% for trek in assigned_treks %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <strong>{{ trek.trek_name }}</strong><br>
+            {{ trek.location }} | {{ trek.status }}
+        </div>
+        <div>
+            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('staff.participants', trek_id=trek.trek_id) }}">Participants</a>
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('staff.update_trek', trek_id=trek.trek_id) }}">Update</a>
+            <form method="post" action="{{ url_for('staff.complete_trek', trek_id=trek.trek_id) }}" class="d-inline">
+                <button class="btn btn-success btn-sm" type="submit">Complete</button>
+            </form>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

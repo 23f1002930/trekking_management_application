@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Edit Trek</h2>
+<form method="post" class="card p-4 rounded-4 shadow-sm">
+    <div class="mb-3">
+        <label class="form-label">Trek Name</label>
+        <input class="form-control" name="trek_name" value="{{ trek.trek_name }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Location</label>
+        <input class="form-control" name="location" value="{{ trek.location }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Difficulty</label>
+        <input class="form-control" name="difficulty" value="{{ trek.difficulty }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Duration</label>
+        <input class="form-control" name="duration" value="{{ trek.duration }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Slots</label>
+        <input type="number" class="form-control" name="available_slots" value="{{ trek.available_slots }}" min="0">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" name="start_date" value="{{ trek.start_date }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" name="end_date" value="{{ trek.end_date }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description">{{ trek.description }}</textarea>
+    </div>
+    <button class="btn btn-primary" type="submit">Save Changes</button>
+</form>
+{% endblock %}
